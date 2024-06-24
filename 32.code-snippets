@@ -1,0 +1,29 @@
+{
+    "Print to console": {
+        "prefix": "bs",
+        "body": [
+            "<!DOCTYPE html>"+
+            "<html lang=\"zh-TW\">"+
+            ""+
+            "<head>"+
+            "\t<meta charset=\"UTF-8\">"+
+            "\t<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">"+
+            "\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">"+
+            "\t<title>Document</title>"+
+            "\t<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\""+
+             "\t\tintegrity=\"sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3\" crossorigin=\"anonymous\">"+
+            "</head>"+
+            ""+
+            "<body>"+
+            "\t"+
+            "\t"+
+            "\t<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js\" "+
+            "\t\tintegrity=\"sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p\" crossorigin=\"anonymous\">"+
+            "\t\t</script>"+
+            "</body>"+
+            ""+
+            "</html>"
+        ],
+        "description": "bootstrap default"
+    }
+}

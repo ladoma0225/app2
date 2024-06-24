@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        .full-height {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-group-vertical {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .btn-group-vertical .btn {
+            margin-bottom: 40px;
+            padding: 0;
+            border: none;
+            background: none;
+        }
+
+        .btn-group-vertical .btn img {
+            width: 300px;
+            height: auto;
+            justify-content: center;
+        }
+
+        .offcanvas-bottom {
+            height: 50vh;
+        }
+
+        .navbar-fixed {
+            width: 10%;
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1110;
+        }
+
+        .navbar-top {
+            top: 0;
+            background-color: #ffffff00;
+            color: white;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .navbar-bottom {
+            bottom: 0;
+            background-color: #343a4000;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .main-img {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            margin-bottom: 20px;
+            margin: 80px auto;
+            transform: scale(1.2); 
+            z-index: 1; /* 確保圖像重疊顯示 */
+
+
+        }
+
+        .img-container {
+    position: relative;
+    width: fit-content; /* 讓容器僅包裹圖像 */
+}
+
+        .secondary-img {
+            max-width: 100%;
+            width: 300px;
+            height: 400px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            margin: 80px auto;
+            transform: scale(1.2); 
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            z-index: 1000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            z-index: 1000;
+            background-color: #ffffff;
+            border-radius: 5px;
+            border: 2px solid #868686;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            z-index: 1000;
+            background-color: #838383;
+        }
+
+        .container2 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 80px;
+        }
+
+        .box {
+            width: 60px;
+            height: 60px;
+            border: 1px solid #c2c2c25c;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            font-size: 40px;
+        }
+
+        .spacing {
+            margin-top: 100px;
+        }
+
+        .fire-img {
+            display: none; /* 初始狀態為隱藏 */
+            max-width: 100%;
+            height: auto;
+            }
+
+        /* CSS 动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(150px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .container .main-img {
+        display: block; /* 或者 display: inline; */
+    }
+    .container .main-img.hidden {
+        display: none;
+    }
+    .main-img-B {
+            max-width: 100%;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            margin-bottom: 20px;
+            margin: 80px auto;
+            transform: scale(5); 
+        position: absolute; /* 將背景圖片設置為絕對定位 */
+        z-index: -1; /* 將背景圖片的層級設置為低於其他元素 */
+        max-width: 100%;
+        margin-top: 250px; 
+    }
+
+    .main-img-C {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        justify-content: center;
+        transform: scale(1.2); 
+
+    position: absolute; /* 將背景圖片設置為絕對定位 */
+    z-index: -1; /* 將背景圖片的層級設置為低於其他元素 */
+    max-width: 100%;
+    margin-top: 650px; 
+    left: 130px; /* 設置左對齊 */
+
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- Left Offcanvasyji左邊瀏覽框 -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasLeft" aria-labelledby="offcanvasLeftLabel">
+        <div class="offcanvas-header" style="background-color: rgb(0, 0, 0); color: white;">
+            <h5 class="offcanvas-title" id="offcanvasLeftLabel">嫌惡的空氣</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <img src="le3.png" alt="" style="width: 100%; height: 100%;">
+        </div>
+    </div>
+    <!-- Right Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+        <div class="offcanvas-header" style="background-color: rgb(0, 0, 0); color: white;">
+            <h5 class="offcanvas-title" id="offcanvasRightLabel">懷念的空氣</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <img src="ri3.png" alt="" style="width: 100%; height: 100%;">
+        </div>
+    </div>
+
+    <!-- Bottom Offcanvas右邊瀏覽框 -->
+    <div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
+        <div class="offcanvas-header" style="background-color: rgb(0, 0, 0); color: white;">
+            <h5 class="offcanvas-title" id="offcanvasBottomLabel">悲傷的空氣</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <img src="bot2.png" alt="" style="width: 100%; height: 100%;">
+        </div>
+    </div>
+
+    <!-- Buttons to toggle offcanvas 第一頁 -->
+    <div class="container full-height">
+
+        <img src="die1.png" alt="Description of die1.png" class="main-img">
+        <img src="die1A.png" alt="Description of die1A.png" class="main-img hidden"style="display: none;">
+        <img src="die1B1.png" alt="Description of die1B1.png" class="main-img"style="display: none;">
+        <img src="die1B2.png" alt="Description of die1B2.png" class="main-img"style="display: none;">
+        <img src="die1B3.png" alt="Description of die13.png" class="main-img"style="display: none;">
+        <img src="die1B4.png" alt="Description of die1B4.png" class="main-img"style="display: none;">
+        <img src="die1B5.png" alt="Description of die1B5.png" class="main-img"style="display: none;">
+
+
+        <div class="container2"style="transform: scale(1.5);">
+            <div class="box" id="toggleButton2" onclick="toggleSlashBar()"></div>
+            <div class="box" onclick="toggleVisibility(this)"></div>
+        </div>
+
+        <div class="spacing"></div>
+
+        <div class="btn-group-vertical">
+            <img src="BG.png" alt="" class="main-img-B">
+            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft"
+                aria-controls="offcanvasLeft">
+                <img src="lef.png" alt="">
+            </button>
+            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                aria-controls="offcanvasRight">
+                <img src="rit.png" alt="打開右側 Offcanvas">
+            </button>
+            <button class="btn" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom"
+                aria-controls="offcanvasBottom">
+                <img src="bott.png" alt="打開底部 Offcanvas">
+            </button>
+        </div>
+
+    </div>
+
+    <!-- Secondary Image 穿越 -->
+    <div class="btn full-height">
+        <img src="foot2.png" alt="" class="main-img-C">
+        <a href="p3.htm" class="btn"> 
+            <img src="foot.png" alt="" class="secondary-img">
+        </a>
+    </div>
+
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-fixed navbar-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" id="top-navbar-link" href="1p.htm">
+                <img src="up.png" alt="" width="150" height="50" class="d-inline-block align-text-top">
+            </a>
+        </div>
+    </nav>
+
+    <!-- 底部导航栏 -->
+    <nav class="navbar navbar-fixed navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" id="bottom-navbar-link" href="p3.htm">
+                <img src="dwon.png" alt="" width="150" height="50" class="d-inline-block align-text-top">
+            </a>
+        </div>
+    </nav>
+
+    <audio id="backgroundMusic"  loop>
+        <source src="268511__xtrgamr__beautiful-or-ominous-music-box.wav" type="audio/wav">
+    </audio>
+
+    <audio id="backgroundMusic2"  loop>
+        <source src="727260__ncone__mysterious-melody-loop.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script>
+        // 确保窗口适应内容
+        function adjustWindow() {
+            const body = document.body;
+            const html = document.documentElement;
+
+            const height = Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight,
+                html.offsetHeight);
+            const width = Math.max(body.scrollWidth, body.offsetWidth, html.clientWidth, html.scrollWidth, html
+                .offsetWidth);
+
+            window.resizeTo(width, height);
+        }
+
+        // 在加载和调整大小时调整窗口
+        window.addEventListener('load', adjustWindow);
+        window.addEventListener('resize', adjustWindow);
+
+function toggleVisibility(element) {
+    const mainImgs = document.querySelectorAll('.main-img');
+
+    if (element.innerText === '🌼') {
+        element.innerText = '';
+
+        // 隐藏除了第一张图之外的所有图片
+        for (let i = 1; i < mainImgs.length; i++) {
+            mainImgs[i].style.display = 'none';
+        }
+
+        // 显示第一张图
+        mainImgs[0].style.display = 'block';
+
+    } else {
+        element.innerText = '🌼';
+
+        // 隐藏所有图片
+        mainImgs.forEach(img => img.style.display = 'none');
+
+        // 显示第7张图片 (即die1B5)
+        mainImgs[6].style.display = 'block';
+        mainImgs[6].scrollIntoView({ behavior: 'auto' });
+    }
+}
+
+        function toggleSlashBar() {
+    const slashBarButton = document.getElementById('toggleButton2');
+    const mainImg = document.querySelectorAll('.main-img');
+
+    // 假设初始状态为显示 '\|/'
+    if (slashBarButton.innerText === '🕯️') {
+        // 如果当前显示的是🕯️，则隐藏所有图片
+        slashBarButton.innerText = '';
+
+        for (let i = 0; i < mainImg.length; i++) {
+            mainImg[i].style.display = 'none';
+        }
+    } else {
+        // 否则，显示🕯️并显示mainImg[1]
+        slashBarButton.innerText = '🕯️';
+
+        for (let i = 0; i < mainImg.length; i++) {
+            mainImg[i].style.display = 'none';
+        }
+
+        mainImg[1].style.display = 'block';
+        mainImg[1].scrollIntoView({ behavior: 'auto' });
+    }
+}
+
+        // JavaScript 代码
+        document.addEventListener("DOMContentLoaded", () => {
+            const buttons = document.querySelectorAll('.btn');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fadeIn');
+                        observer.unobserve(entry.target); // 动画只执行一次
+                    }
+                });
+            }, observerOptions);
+
+            buttons.forEach(button => {
+                observer.observe(button);
+            });
+
+            const topNavbarLink = document.getElementById('top-navbar-link');
+            const bottomNavbarLink = document.getElementById('bottom-navbar-link');
+
+            let isScrolling = false;
+
+            topNavbarLink.addEventListener('click', (event) => {
+                if (window.scrollY === 0) {
+                    // 视窗已经置顶时，触发链接
+                    window.location.href = topNavbarLink.href;
+                } else {
+                    // 视窗未置顶时，滚动到顶部
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                    event.preventDefault(); // 阻止默认链接行为
+                }
+            });
+
+            bottomNavbarLink.addEventListener('click', (event) => {
+                const scrollHeight = document.documentElement.scrollHeight;
+                const clientHeight = document.documentElement.clientHeight;
+                const scrollPosition = window.scrollY + clientHeight;
+
+                if (scrollPosition >= scrollHeight - 1) {
+                    // 视窗已经到底时，触发链接
+                    window.location.href = bottomNavbarLink.href;
+                } else {
+                    // 视窗未到底时，滚动到底部
+                    if (!isScrolling) {
+                        isScrolling = true;
+                        window.scrollTo({
+                            top: scrollHeight,
+                            behavior: 'smooth'
+                        });
+                        event.preventDefault(); // 阻止默认链接行为
+                    }
+                }
+            });
+
+            function playMusic(audioElement) {
+                audioElement.play();
+            }
+
+            function stopMusic(audioElement) {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+            }
+
+            function isMusicPlaying(audioElement) {
+                return !audioElement.paused;
+            }
+
+            const audio = document.getElementById('backgroundMusic');
+            const audio2 = document.getElementById('backgroundMusic2');
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+            function calculateVolume(scrollPosition) {
+                const scrollRatio = scrollPosition / maxScroll;
+
+                const minVolume = 0;
+                const maxVolume = 1;
+                const volume = 1 - scrollRatio * (1 - minVolume);
+
+                audio.volume = Math.max(minVolume, Math.min(maxVolume, volume));
+
+                // For backgroundMusic2, reverse the volume change
+                const volume2 = scrollRatio * (maxVolume - minVolume);
+                audio2.volume = Math.max(minVolume, Math.min(maxVolume, volume2));
+            }
+
+            calculateVolume(window.scrollY);
+
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.scrollY;
+                calculateVolume(scrollPosition);
+            });
+
+            playMusic(audio);
+            playMusic(audio2);
+        });
+
+        document.addEventListener('click', () => {
+    const audio = document.getElementById('backgroundMusic'); audio.play();
+    const audio2 = document.getElementById('backgroundMusic2');
+    audio2.play();
+
+    // 移除提示信息
+    const startMusicMessage = document.getElementById('startMusicMessage');
+    if (startMusicMessage) {
+        startMusicMessage.remove();
+    }
+});
+
+
+    </script>
+</body>
+
+</html>

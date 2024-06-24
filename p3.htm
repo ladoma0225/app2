@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <style>
+        .zoomed-image {
+    max-width: 70%;
+    max-height: 70%;
+    z-index: 1000;
+}
+
+        .navbar-fixed {
+            width: 10%;
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1110;
+        }
+
+        .navbar-top {
+            top: 0;
+            background-color: #ffffff00;
+            color: white;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+        }
+
+        .navbar-bottom {
+            bottom: 0;
+            background-color: #343a4000;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+            z-index: 1000;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            z-index: 1000;
+            background-color: #ffffff;
+            border-radius: 5px;
+            border: 2px solid #868686;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            z-index: 1000;
+            background-color: #838383;
+        }
+
+        /* CSS 动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(150px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+           
+        }
+
+        .modal-content {
+            z-index: 1051;
+            position: relative;
+            text-align: center;
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .modal-title {
+            margin: 0 auto;
+            flex-grow: 1;
+            text-align: center;
+            padding-left: 20px;
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            text-align: center;
+        }
+        
+
+        .modal-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            background-color: #3c1f0ca1;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 移除按钮的动画效果 */
+        .modal-footer .btn {
+            animation: none !important;
+            
+            background-color: #e4e4e4ab;
+            border: 1px solid #0b0b0b76;
+            color: #000;
+        }
+       
+
+  /* Reset default margin and padding */
+  * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden; /* 防止水平滚动条 */
+        }
+
+        body {
+            position: relative;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('02.gif');
+            background-size: cover;
+            background-position: center;
+            z-index: -1;
+            opacity: 0.2;
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around; /* 调整需要的间距 */
+            align-items: flex-start; /* 让每个容器顶部对齐 */
+            margin-bottom: 20px; /* 调整需要的间距 */
+            margin: 50px;
+        }
+
+        .image-group {
+            width: 30%; /* 每个图片组占据画面宽度的30% */
+            display: flex;
+            flex-direction: row; /* 水平排列按钮和图片 */
+            align-items: flex-start; /* 按钮和图片顶部对齐 */
+            margin-right: 20px; /* 调整需要的间距 */
+        }
+
+        .toggle-button {
+            width: 30%; /* 每个按钮占画面宽度的30% */
+            padding: 5px 10px;
+            background-color: #000000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-sizing: border-box; /* 确保按钮宽度包含padding */
+            margin-right: 50px; /* 调整按钮与图片之间的间距 */
+            position: sticky;
+            top: 30px; /* 让按钮保持在显示范围内 */
+        }
+
+        .image-list {
+            width: 70%; /* 图片列表占据画面宽度的70% */
+            display: flex;
+            flex-direction: column; /* 垂直排列图片 */
+            max-height: 70vh; /* 设置图片组的最大高度为视窗高度 */
+            overflow-y: auto; /* 允许垂直滚动 */
+        }
+
+        .image-item {
+            width: 100%; /* 每个图片组内的图片占画面宽度的100% */
+            margin-bottom: 10px; /* 调整需要的间距 */
+            display: none; /* 初始隐藏图片 */
+            position: relative; /* 相对定位，用于放大图片和遮罩 */
+            opacity: 0; /* 初始透明度 */
+        }
+
+        .image-item img {
+            width: 100%; /* 图片宽度占满其容器 */
+            display: block;
+            max-width: 100%;
+            height: auto;
+            cursor: pointer; /* 添加游标指示 */
+        }
+
+        /* 遮罩层样式 */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8); /* 半透明白色遮罩 */
+            z-index: 999; /* 确保在最上层 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .zoomed-image {
+    max-width: 80%; /* 固定放大图片的大小为250% */
+    max-height: 80%; /* 限制最大高度 */
+    z-index: 1000; /* 确保在遮罩层上方 */
+}
+
+
+        /* CSS Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        
+        /* 隐藏滚动条 */
+        .image-list::-webkit-scrollbar {
+            display: none; /* Webkit引擎浏览器 */
+        }
+
+        .image-list {
+            -ms-overflow-style: none;  /* IE 和 Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+    </style>
+</head>
+
+<body>
+    <!-- 顶部导航栏 -->
+    <nav class="navbar navbar-fixed navbar-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" id="top-navbar-link" href="murmur.htm">
+                <img src="up.png" alt="" width="150" height="50" class="d-inline-block align-text-top">
+            </a>
+        </div>
+    </nav>
+
+    <!-- 底部导航栏 -->
+    <nav class="navbar navbar-fixed navbar-bottom">
+        <div class="container-fluid">
+            <a class="navbar-brand" id="bottom-navbar-link" href="1p.htm">
+                <img src="dwon.png" alt="" width="150" height="50" class="d-inline-block align-text-top">
+            </a>
+        </div>
+    </nav>
+
+    <!-- 模态框结构 -->
+            <div class="modal-content">
+                <img src="sleep.png" alt="葬" >
+
+                <div class="modal-header">
+                    <h5 class="modal-title"><b>下葬完成</b></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="background-overlay"></div>
+
+    <div class="content">
+        <div class="container">
+            <div class="image-group" id="image-group-1">
+                <button class="toggle-button" onclick="toggleGroup('image-group-1')">記憶收納</button>
+                <div class="image-list">
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy1.png" alt="圖片 1">
+                    </div>
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy2.png" alt="圖片 2">
+                    </div>
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy3.png" alt="圖片 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="image-group" id="image-group-2">
+                <button class="toggle-button" onclick="toggleGroup('image-group-2')">記憶收納</button>
+                <div class="image-list">
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy4.png" alt="圖片 4">
+                    </div>
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy5.png" alt="圖片 5">
+                    </div>
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy6.png" alt="圖片 6">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="image-group" id="image-group-3">
+                <button class="toggle-button" onclick="toggleGroup('image-group-3')">記憶收納</button>
+                <div class="image-list">
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy7.png" alt="圖片 7">
+                    </div>
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy8.png" alt="圖片 8">
+                    </div>
+                    <div class="image-item animate-fadeIn">
+                        <img src="bkhy9.png" alt="圖片 9">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <audio id="backgroundMusic2"  loop>
+        <source src="268511__xtrgamr__beautiful-or-ominous-music-box.wav" type="audio/wav">
+    </audio>
+
+    <audio id="backgroundMusic"  loop>
+        <source src="727260__ncone__mysterious-melody-loop.mp3" type="audio/mpeg">
+    </audio>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    const windowHeight = window.innerHeight;
+    const desiredHeight = windowHeight * 2.5; // 250% of window height
+    document.documentElement.style.height = desiredHeight + 'px';
+    document.body.style.height = desiredHeight + 'px';
+});
+
+
+
+
+       window.onload = function() {
+  window.scrollTo(0, 0);
+}
+
+  // 切换图片组的显示与隐藏
+  function toggleGroup(groupId) {
+            var group = document.getElementById(groupId);
+            var imageItems = group.querySelectorAll('.image-item');
+
+            imageItems.forEach(function (item) {
+                if (item.style.display === 'none' || item.style.display === '') {
+                    item.style.display = 'block';
+                    item.style.opacity = '1';
+                } else {
+                    item.style.display = 'none';
+                    item.style.opacity = '0';
+                }
+            });
+
+            // 调整背景覆盖层高度
+            adjustBackgroundOverlay();
+        }
+
+        // 调整背景覆盖层高度函数
+        function adjustBackgroundOverlay() {
+            // 获取最底部展开图片的底部位置
+            var imageItems = document.querySelectorAll('.image-item');
+            var lowestBottom = 0;
+
+            imageItems.forEach(function(item) {
+                if (item.style.display !== 'none') {
+                    var rect = item.getBoundingClientRect();
+                    var bottom = rect.bottom;
+                    if (bottom > lowestBottom) {
+                        lowestBottom = bottom;
+                    }
+                }
+            });
+
+            // 调整背景覆盖层的上方位置和高度
+            var backgroundOverlay = document.querySelector('.background-overlay');
+            var viewportHeight = window.innerHeight;
+            if (lowestBottom > viewportHeight) {
+                lowestBottom = viewportHeight;
+            }
+            backgroundOverlay.style.height = lowestBottom + 'px';
+        }
+
+        // 页面加载完毕后执行一次调整背景覆盖层高度
+        document.addEventListener('DOMContentLoaded', function() {
+            adjustBackgroundOverlay();
+        });
+
+        // 监听窗口大小变化，调整背景覆盖层高度
+        window.addEventListener('resize', adjustBackgroundOverlay);
+
+        // 获取所有图片元素
+        const images = document.querySelectorAll('.image-item img');
+
+        // 为每张图片添加点击事件监听器
+        images.forEach(image => {
+            image.addEventListener('click', () => {
+                // 创建遮罩层
+                const overlay = document.createElement('div');
+                overlay.classList.add('overlay');
+                document.body.appendChild(overlay);
+
+                // 创建放大图片元素
+                const zoomedImage = document.createElement('img');
+                zoomedImage.src = image.src;
+                zoomedImage.classList.add('zoomed-image');
+                overlay.appendChild(zoomedImage);
+
+                // 点击遮罩层时关闭放大图片和遮罩层
+                overlay.addEventListener('click', () => {
+                    overlay.remove();
+                });
+            });
+        });
+        // JavaScript 代码
+        document.addEventListener("DOMContentLoaded", () => {
+            const buttons = document.querySelectorAll('.btn');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-fadeIn');
+                        observer.unobserve(entry.target); // 动画只执行一次
+                    }
+                });
+            }, observerOptions);
+
+            buttons.forEach(button => {
+                observer.observe(button);
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const topNavbarLink = document.getElementById('top-navbar-link');
+            const bottomNavbarLink = document.getElementById('bottom-navbar-link');
+
+            let isScrolling = false;
+
+            topNavbarLink.addEventListener('click', (event) => {
+                if (window.scrollY === 0) {
+                    // 视窗已经置顶时，触发链接
+                    window.location.href = topNavbarLink.href;
+                } else {
+                    // 视窗未置顶时，滚动到顶部
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    event.preventDefault(); // 阻止默认链接行为
+                }
+            });
+
+            bottomNavbarLink.addEventListener('click', (event) => {
+                const scrollHeight = document.documentElement.scrollHeight;
+                const clientHeight = document.documentElement.clientHeight;
+                const scrollPosition = window.scrollY + clientHeight;
+
+                if (scrollPosition >= scrollHeight - 1) {
+                    // 视窗已经到底时，触发链接
+                    window.location.href = bottomNavbarLink.href;
+                } else {
+                    // 视窗未到底时，滚动到底部
+                    if (!isScrolling) {
+                        isScrolling = true;
+                        window.scrollTo({ top: scrollHeight, behavior: 'smooth' });
+                        event.preventDefault(); // 阻止默认链接行为
+                    }
+                }
+            });
+
+            function playMusic(audioElement) {
+                audioElement.play();
+            }
+
+            function stopMusic(audioElement) {
+                audioElement.pause();
+                audioElement.currentTime = 0;
+            }
+
+            function isMusicPlaying(audioElement) {
+                return !audioElement.paused;
+            }
+
+            const audio = document.getElementById('backgroundMusic');
+            const audio2 = document.getElementById('backgroundMusic2');
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+
+            function calculateVolume(scrollPosition) {
+                const scrollRatio = scrollPosition / maxScroll;
+
+                const minVolume = 0;
+                const maxVolume = 1;
+                const volume = 1 - scrollRatio * (1 - minVolume);
+
+                audio.volume = Math.max(minVolume, Math.min(maxVolume, volume));
+
+                // For backgroundMusic2, reverse the volume change
+                const volume2 = scrollRatio * (maxVolume - minVolume);
+                audio2.volume = Math.max(minVolume, Math.min(maxVolume, volume2));
+            }
+
+            calculateVolume(window.scrollY);
+
+            window.addEventListener('scroll', () => {
+                const scrollPosition = window.scrollY;
+                calculateVolume(scrollPosition);
+            });
+
+            playMusic(audio);
+            playMusic(audio2);
+        });
+
+        document.addEventListener('click', () => {
+    const audio = document.getElementById('backgroundMusic'); audio.play();
+    const audio2 = document.getElementById('backgroundMusic2');
+    audio2.play();
+
+
+    // 监听点击事件
+    document.addEventListener('click', handleFirstInteraction);
+
+    // 监听触摸事件（移动端触摸）
+    document.addEventListener('touchstart', handleFirstInteraction);
+
+    // 监听键盘事件（可以根据具体需求添加）
+    document.addEventListener('keydown', handleFirstInteraction);
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+        const bottomNavbarLink = document.getElementById('bottom-navbar-link');
+        bottomNavbarLink.addEventListener('click', (event) => {
+            event.preventDefault(); // 阻止默认的链接跳转
+            sessionStorage.setItem('fromPage', 'p3'); // 设置跳转信息
+           
+            window.location.href = newHref;
+        });
+    });
+    </script>
+</body>
+
+</html>
